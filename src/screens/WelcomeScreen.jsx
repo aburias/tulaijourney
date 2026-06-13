@@ -1,6 +1,56 @@
 import React from 'react';
 
-const WelcomeScreen = ({ onStart }) => {
+const GRADES = [
+  { id: 'kinder', icon: '/backgrounds/grade_kinder.png', unlocked: true },
+  { id: 'primary', icon: '/backgrounds/grade_primary.png', unlocked: false },
+  { id: 'intermediate', icon: '/backgrounds/grade_intermediate.png', unlocked: false },
+  { id: 'jhs', icon: '/backgrounds/grade_jhs.png', unlocked: false },
+  { id: 'shs', icon: '/backgrounds/grade_shs.png', unlocked: false },
+];
+
+const GradeIcon = ({ grade, onSelect }) => (
+  <div 
+    onClick={() => grade.unlocked && onSelect(grade.id)}
+    style={{
+      position: 'relative',
+      cursor: grade.unlocked ? 'pointer' : 'not-allowed',
+      transition: 'transform 0.2s',
+    }}
+    onMouseEnter={(e) => { if (grade.unlocked) e.currentTarget.style.transform = 'scale(1.12)'; }}
+    onMouseLeave={(e) => e.currentTarget.style.transform = 'scale(1)'}
+  >
+    <img 
+      src={grade.icon} 
+      alt=""
+      style={{
+        width: '100%',
+        height: '100%',
+        objectFit: 'contain',
+        filter: grade.unlocked 
+          ? 'drop-shadow(0 0.8vh 1.5vh rgba(0,0,0,0.5))' 
+          : 'grayscale(100%) brightness(0.4) drop-shadow(0 0.8vh 1.5vh rgba(0,0,0,0.5))',
+        transition: 'filter 0.3s'
+      }}
+    />
+    {!grade.unlocked && (
+      <div style={{
+        position: 'absolute',
+        top: '50%',
+        left: '50%',
+        transform: 'translate(-50%, -50%)',
+        fontSize: '5vh',
+        filter: 'drop-shadow(0 2px 6px rgba(0,0,0,0.7))'
+      }}>
+        🔒
+      </div>
+    )}
+  </div>
+);
+
+const WelcomeScreen = ({ onGradeSelect }) => {
+  const topRow = GRADES.slice(0, 3);
+  const bottomRow = GRADES.slice(3, 5);
+
   return (
     <div style={{
       width: '100vw',
@@ -9,67 +59,62 @@ const WelcomeScreen = ({ onStart }) => {
       backgroundSize: 'cover',
       backgroundPosition: 'center',
       display: 'flex',
+      flexDirection: 'column',
       justifyContent: 'center',
       alignItems: 'center',
-      overflow: 'hidden',
-      cursor: 'pointer'
-    }} onClick={onStart}>
-      
+      overflow: 'hidden'
+    }}>
       <style>
         {`
-          @keyframes pulseBtn {
-            0% { transform: translateX(-50%) scale(1); }
-            50% { transform: translateX(-50%) scale(1.05); }
-            100% { transform: translateX(-50%) scale(1); }
+          @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
           }
         `}
       </style>
 
-      {/* 16:9 SAFE AREA CONTAINER */}
-      <div style={{
-        position: 'relative',
-        width: '100vw',
-        height: '56.25vw',
-        maxHeight: '100vh',
-        maxWidth: '177.78vh',
-        pointerEvents: 'none'
-      }}>
-        {/* The Logo positioned via percentages */}
-        <img 
-          src="/backgrounds/welcome_logo.png" 
-          alt="Welcome Adventurer" 
-          style={{
-            position: 'absolute',
-            top: '5%',
-            left: '50%',
-            transform: 'translateX(-50%)',
-            width: '45%',
-            filter: 'drop-shadow(0px 1vmin 1.5vmin rgba(0,0,0,0.5))'
-          }}
-          onError={(e) => e.target.style.display = 'none'}
-        />
+      {/* Logo at the top */}
+      <img 
+        src="/backgrounds/welcome_logo.png" 
+        alt="Welcome Adventurer" 
+        style={{
+          width: '35vh',
+          height: 'auto',
+          filter: 'drop-shadow(0px 1vmin 1.5vmin rgba(0,0,0,0.5))',
+          marginBottom: '2vh'
+        }}
+        onError={(e) => e.target.style.display = 'none'}
+      />
 
-        {/* Tap to Start button — visual only, the whole screen is clickable */}
-        <div style={{
-          position: 'absolute',
-          bottom: '15%',
-          left: '50%',
-          padding: '2% 6%', 
-          fontSize: '3vmin', 
-          fontFamily: '"Comic Sans MS", "Chalkboard SE", sans-serif',
-          backgroundColor: '#FF9800',
-          color: 'white',
-          border: '0.6vmin solid white', 
-          borderRadius: '10vmin', 
-          boxShadow: '0 1vmin 0 #E65100, 0 1.5vmin 2.5vmin rgba(0,0,0,0.5)',
-          fontWeight: '900',
-          textTransform: 'uppercase',
-          letterSpacing: '0.2vmin',
-          animation: 'pulseBtn 2s infinite ease-in-out',
-          textShadow: '0.2vmin 0.2vmin 0.4vmin rgba(0,0,0,0.4)',
-          transformOrigin: 'center'
-        }}>
-          Tap to Start
+      {/* Grade Grid — 3 top, 2 bottom, all centered */}
+      <div style={{
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        gap: '1.5vh',
+        animation: 'fadeInUp 0.8s ease-out both'
+      }}>
+        {/* Top row: 3 icons */}
+        <div style={{ display: 'flex', justifyContent: 'center', gap: '2.5vh' }}>
+          {topRow.map((grade, i) => (
+            <div key={grade.id} style={{ 
+              width: '14vh', height: '14vh',
+              animation: `fadeInUp 0.5s ${0.1 * i}s ease-out both` 
+            }}>
+              <GradeIcon grade={grade} onSelect={onGradeSelect} />
+            </div>
+          ))}
+        </div>
+        {/* Bottom row: 2 icons */}
+        <div style={{ display: 'flex', justifyContent: 'center', gap: '2.5vh' }}>
+          {bottomRow.map((grade, i) => (
+            <div key={grade.id} style={{ 
+              width: '14vh', height: '14vh',
+              animation: `fadeInUp 0.5s ${0.3 + 0.1 * i}s ease-out both` 
+            }}>
+              <GradeIcon grade={grade} onSelect={onGradeSelect} />
+            </div>
+          ))}
         </div>
       </div>
     </div>

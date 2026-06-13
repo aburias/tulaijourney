@@ -1,7 +1,29 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+
+// Preload all heavy images while the user is on the splash screen
+const PRELOAD_IMAGES = [
+  '/backgrounds/welcome_bg.png',
+  '/backgrounds/welcome_logo.png',
+  '/backgrounds/title_bg.png',
+  '/backgrounds/grade_kinder.png',
+  '/backgrounds/grade_primary.png',
+  '/backgrounds/grade_intermediate.png',
+  '/backgrounds/grade_jhs.png',
+  '/backgrounds/grade_shs.png',
+  '/master_boy.png',
+  '/master_girl.png',
+];
 
 const SplashScreen = ({ onReady }) => {
   const [tapped, setTapped] = useState(false);
+
+  // Start preloading images as soon as splash mounts
+  useEffect(() => {
+    PRELOAD_IMAGES.forEach(src => {
+      const img = new Image();
+      img.src = src;
+    });
+  }, []);
 
   const handleTap = () => {
     if (tapped) return; // Prevent double-tap

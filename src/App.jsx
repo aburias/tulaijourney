@@ -8,21 +8,23 @@ import OrientationLock from './components/OrientationLock';
 function App() {
   const [currentScreen, setCurrentScreen] = useState('SPLASH'); // SPLASH, WELCOME, TITLE, OVERWORLD
   const [playerProfile, setPlayerProfile] = useState(null);
+  const [selectedGrade, setSelectedGrade] = useState(null);
 
   const onSplashDone = () => {
     setCurrentScreen('WELCOME');
   };
 
-  const startGame = () => {
+  const onGradeSelect = (gradeId) => {
+    setSelectedGrade(gradeId);
     setCurrentScreen('TITLE');
   };
 
   const onCharacterSelect = (profile) => {
-    setPlayerProfile(profile);
+    setPlayerProfile({ ...profile, grade: selectedGrade });
     setCurrentScreen('OVERWORLD');
   };
 
-  // Splash screen sits OUTSIDE the orientation lock — it works in any orientation
+  // Splash screen sits OUTSIDE orientation lock — works in any orientation
   if (currentScreen === 'SPLASH') {
     return <SplashScreen onReady={onSplashDone} />;
   }
@@ -30,7 +32,7 @@ function App() {
   // Everything after splash is inside the orientation lock
   return (
     <OrientationLock>
-      {currentScreen === 'WELCOME' && <WelcomeScreen onStart={startGame} />}
+      {currentScreen === 'WELCOME' && <WelcomeScreen onGradeSelect={onGradeSelect} />}
       {currentScreen === 'TITLE' && <TitleScreen onSelect={onCharacterSelect} />}
       {currentScreen === 'OVERWORLD' && <Overworld playerProfile={playerProfile} />}
     </OrientationLock>
