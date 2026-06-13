@@ -1,20 +1,28 @@
-import React from 'react'
-import SpriteCharacter from './components/SpriteCharacter'
+import React, { useState } from 'react';
+import WelcomeScreen from './screens/WelcomeScreen';
+import TitleScreen from './screens/TitleScreen';
+import Overworld from './screens/Overworld';
 
 function App() {
+  const [currentScreen, setCurrentScreen] = useState('WELCOME'); // WELCOME, TITLE, OVERWORLD
+  const [playerProfile, setPlayerProfile] = useState(null);
+
+  const startGame = () => {
+    setCurrentScreen('TITLE');
+  };
+
+  const onCharacterSelect = (profile) => {
+    setPlayerProfile(profile);
+    setCurrentScreen('OVERWORLD');
+  };
+
   return (
-    <div className="game-container">
-      <div className="game-world">
-        {/* We place our Sprite Character in the game world */}
-        <SpriteCharacter />
-      </div>
-      
-      <div className="controls-hint">
-        <h2>Tulai Journey</h2>
-        <p>Use <b>Arrow Keys</b> or <b>W,A,S,D</b> to move the character.</p>
-      </div>
-    </div>
-  )
+    <>
+      {currentScreen === 'WELCOME' && <WelcomeScreen onStart={startGame} />}
+      {currentScreen === 'TITLE' && <TitleScreen onSelect={onCharacterSelect} />}
+      {currentScreen === 'OVERWORLD' && <Overworld playerProfile={playerProfile} />}
+    </>
+  );
 }
 
-export default App
+export default App;

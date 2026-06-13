@@ -3,7 +3,7 @@ import React, { useEffect, useRef, useState } from 'react';
 const SCALE = 2; // How much to scale up the pixel art
 const FRAME_SPEED = 100; // Milliseconds per frame
 
-const SpriteCharacter = () => {
+const SpriteCharacter = ({ controlStateRef }) => {
   const canvasRef = useRef(null);
   
   // Game State
@@ -38,11 +38,17 @@ const SpriteCharacter = () => {
     const handleKeyDown = (e) => {
       keysPressed.current[e.key.toLowerCase()] = true;
       keysPressed.current[e.key] = true;
+      if (e.key === 'Enter') {
+        if (controlStateRef) controlStateRef.current.action = true;
+      }
     };
     
     const handleKeyUp = (e) => {
       keysPressed.current[e.key.toLowerCase()] = false;
       keysPressed.current[e.key] = false;
+      if (e.key === 'Enter') {
+        if (controlStateRef) controlStateRef.current.action = false;
+      }
     };
 
     window.addEventListener('keydown', handleKeyDown);
@@ -55,10 +61,10 @@ const SpriteCharacter = () => {
       // 1. Process Input & Movement
       let dx = 0;
       let dy = 0;
-      // Adjust speed for diagonals so we don't move faster when pressing two keys
       const baseSpeed = 4;
       const diagSpeed = baseSpeed * 0.707; 
 
+      // Keyboard input
       const up = keysPressed.current['arrowup'] || keysPressed.current['w'];
       const down = keysPressed.current['arrowdown'] || keysPressed.current['s'];
       const left = keysPressed.current['arrowleft'] || keysPressed.current['a'];
@@ -69,23 +75,39 @@ const SpriteCharacter = () => {
       if (left && !right) dx -= 1;
       if (right && !left) dx += 1;
 
-      const moving = dx !== 0 || dy !== 0;
+      // Merge Joystick Input
+      if (controlStateRef && (controlStateRef.current.joyX !== 0 || controlStateRef.current.joyY !== 0)) {
+        // Override keyboard with joystick if actively using joystick
+        dx = controlStateRef.current.joyX;
+        dy = controlStateRef.current.joyY;
+      }
+
+      // Check if there is actual movement intended
+      const moving = Math.abs(dx) > 0.1 || Math.abs(dy) > 0.1;
       
       let speed = baseSpeed;
       if (dx !== 0 && dy !== 0) speed = diagSpeed;
 
       let newDir = direction;
+
+      // Calculate exact 8-way direction using thresholding for analog joystick
+      let dirDx = 0;
+      let dirDy = 0;
+      if (dx < -0.3) dirDx = -1;
+      else if (dx > 0.3) dirDx = 1;
       
-      // Calculate exact 8-way direction
-      if (dy < 0 && dx === 0) newDir = 'up';
-      if (dy > 0 && dx === 0) newDir = 'down';
-      if (dx < 0 && dy === 0) newDir = 'left';
-      if (dx > 0 && dy === 0) newDir = 'right';
+      if (dy < -0.3) dirDy = -1;
+      else if (dy > 0.3) dirDy = 1;
+
+      if (dirDy < 0 && dirDx === 0) newDir = 'up';
+      if (dirDy > 0 && dirDx === 0) newDir = 'down';
+      if (dirDx < 0 && dirDy === 0) newDir = 'left';
+      if (dirDx > 0 && dirDy === 0) newDir = 'right';
       
-      if (dy < 0 && dx > 0) newDir = 'up-right';
-      if (dy < 0 && dx < 0) newDir = 'up-left';
-      if (dy > 0 && dx > 0) newDir = 'down-right';
-      if (dy > 0 && dx < 0) newDir = 'down-left';
+      if (dirDy < 0 && dirDx > 0) newDir = 'up-right';
+      if (dirDy < 0 && dirDx < 0) newDir = 'up-left';
+      if (dirDy > 0 && dirDx > 0) newDir = 'down-right';
+      if (dirDy > 0 && dirDx < 0) newDir = 'down-left';
 
       // React state updates (batched)
       if (moving !== isMoving) setIsMoving(moving);
