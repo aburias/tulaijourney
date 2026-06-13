@@ -91,14 +91,14 @@ const WelcomeScreen = ({ onGradeSelect }) => {
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
-        gap: '1.5vh',
+        gap: '2vh',
         animation: 'fadeInUp 0.8s ease-out both'
       }}>
         {/* Top row: 3 icons */}
-        <div style={{ display: 'flex', justifyContent: 'center', gap: '2.5vh' }}>
+        <div style={{ display: 'flex', justifyContent: 'center', gap: '3.5vh' }}>
           {topRow.map((grade, i) => (
             <div key={grade.id} style={{ 
-              width: '14vh', height: '14vh',
+              width: '17vh', height: '17vh',
               animation: `fadeInUp 0.5s ${0.1 * i}s ease-out both` 
             }}>
               <GradeIcon grade={grade} onSelect={onGradeSelect} />
@@ -106,10 +106,10 @@ const WelcomeScreen = ({ onGradeSelect }) => {
           ))}
         </div>
         {/* Bottom row: 2 icons */}
-        <div style={{ display: 'flex', justifyContent: 'center', gap: '2.5vh' }}>
+        <div style={{ display: 'flex', justifyContent: 'center', gap: '3.5vh' }}>
           {bottomRow.map((grade, i) => (
             <div key={grade.id} style={{ 
-              width: '14vh', height: '14vh',
+              width: '17vh', height: '17vh',
               animation: `fadeInUp 0.5s ${0.3 + 0.1 * i}s ease-out both` 
             }}>
               <GradeIcon grade={grade} onSelect={onGradeSelect} />
