@@ -19,11 +19,14 @@ export default defineConfig({
         background_color: '#4CAF50',
         display: 'fullscreen',
         orientation: 'landscape',
+        start_url: '/',
+        scope: '/',
         icons: [
           {
             src: '/app_icon.png',
-            sizes: '192x192 512x512',
-            type: 'image/png'
+            sizes: '512x512',
+            type: 'image/png',
+            purpose: 'any maskable'
           }
         ]
       }
