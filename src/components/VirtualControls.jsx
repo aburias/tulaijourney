@@ -19,9 +19,9 @@ const VirtualControls = ({ controlStateRef }) => {
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
-  // Calculate joystick sizes dynamically based on viewport (max 25% of the shortest dimension, capped)
+  // Calculate joystick sizes dynamically based PURELY on viewport percentage
   const vMin = Math.min(dimensions.width, dimensions.height);
-  const baseSize = Math.min(vMin * 0.35, 160); // 35vmin, max 160px
+  const baseSize = vMin * 0.35; // Exactly 35% of the shortest screen dimension
   const stickSize = baseSize * 0.45;
   const maxRadius = baseSize / 2;
 
@@ -112,8 +112,8 @@ const VirtualControls = ({ controlStateRef }) => {
             position: 'absolute',
             left: '8vw',
             bottom: '15vh',
-            width: baseSize,
-            height: baseSize,
+            width: `${baseSize}px`,
+            height: `${baseSize}px`,
             borderRadius: '50%',
             border: `${baseSize * 0.03}px dashed rgba(255, 255, 255, 0.4)`,
             pointerEvents: 'none',
@@ -123,8 +123,8 @@ const VirtualControls = ({ controlStateRef }) => {
             opacity: 0.7
           }}>
             <div style={{
-              width: stickSize,
-              height: stickSize,
+              width: `${stickSize}px`,
+              height: `${stickSize}px`,
               borderRadius: '50%',
               backgroundColor: 'rgba(255, 255, 255, 0.3)'
             }} />
@@ -137,8 +137,8 @@ const VirtualControls = ({ controlStateRef }) => {
             position: 'absolute',
             left: basePos.x - baseSize / 2,
             top: basePos.y - baseSize / 2,
-            width: baseSize,
-            height: baseSize,
+            width: `${baseSize}px`,
+            height: `${baseSize}px`,
             borderRadius: '50%',
             backgroundColor: 'rgba(255, 255, 255, 0.4)',
             border: `${baseSize * 0.03}px solid rgba(255, 255, 255, 0.6)`,
@@ -146,46 +146,46 @@ const VirtualControls = ({ controlStateRef }) => {
             backdropFilter: 'blur(4px)'
           }}>
             <div style={{
-              width: stickSize,
-              height: stickSize,
+              width: `${stickSize}px`,
+              height: `${stickSize}px`,
               borderRadius: '50%',
               backgroundColor: 'rgba(255, 255, 255, 0.9)',
               position: 'absolute',
               top: '50%',
               left: '50%',
               transform: `translate(calc(-50% + ${stickPos.x}px), calc(-50% + ${stickPos.y}px))`,
-              boxShadow: '0 4px 12px rgba(0,0,0,0.3)'
+              boxShadow: '0 0.5vmin 1.5vmin rgba(0,0,0,0.3)'
             }} />
           </div>
         )}
       </div>
 
-      {/* Right Side: Action Button using viewport units */}
+      {/* Right Side: Action Button using PURE viewport units */}
       <div 
         onPointerDown={(e) => { e.preventDefault(); if(controlStateRef) controlStateRef.current.action = true; }}
         onPointerUp={(e) => { e.preventDefault(); if(controlStateRef) controlStateRef.current.action = false; }}
         onPointerLeave={(e) => { e.preventDefault(); if(controlStateRef) controlStateRef.current.action = false; }}
         style={{
           position: 'absolute',
-          bottom: '15vh',  // Responsive bottom spacing
-          right: '8vw',    // Responsive right spacing
-          width: 'max(12vh, 70px)', // Scale based on height, but don't get too small
-          height: 'max(12vh, 70px)',
+          bottom: '15vh',  
+          right: '8vw',    
+          width: '16vmin', // Strictly relative
+          height: '16vmin',
           borderRadius: '50%',
           backgroundColor: '#4CAF50',
-          border: 'max(0.5vh, 4px) solid white',
+          border: '1vmin solid white',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
           color: 'white',
           fontWeight: '900',
-          fontSize: 'max(4vh, 20px)',
-          boxShadow: '0 6px 16px rgba(0,0,0,0.3)',
+          fontSize: '5vmin',
+          boxShadow: '0 1vmin 2vmin rgba(0,0,0,0.3)',
           pointerEvents: 'auto',
           touchAction: 'none',
           userSelect: 'none',
           cursor: 'pointer',
-          textShadow: '1px 1px 2px rgba(0,0,0,0.5)'
+          textShadow: '0.2vmin 0.2vmin 0.4vmin rgba(0,0,0,0.5)'
         }}
       >
         GO

@@ -2,7 +2,7 @@ import React, { useRef } from 'react';
 import SpriteCharacter from '../components/SpriteCharacter';
 import VirtualControls from '../components/VirtualControls';
 
-const Overworld = () => {
+const Overworld = ({ playerProfile }) => {
   // Shared ref to pass joystick data to the SpriteCharacter without triggering React re-renders
   const controlStateRef = useRef({ joyX: 0, joyY: 0, action: false });
 
@@ -22,7 +22,7 @@ const Overworld = () => {
         For now, the character just walks around the screen.
       */}
       
-      <SpriteCharacter controlStateRef={controlStateRef} />
+      <SpriteCharacter controlStateRef={controlStateRef} playerProfile={playerProfile} />
       
       <VirtualControls controlStateRef={controlStateRef} />
       
