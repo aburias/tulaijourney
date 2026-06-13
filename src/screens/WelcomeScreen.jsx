@@ -73,15 +73,19 @@ const WelcomeScreen = ({ onGradeSelect }) => {
         `}
       </style>
 
-      {/* Logo at the top */}
+      {/* Logo pinned to top */}
       <img 
         src="/backgrounds/welcome_logo.png" 
         alt="Welcome Adventurer" 
         style={{
-          width: '35vh',
+          position: 'absolute',
+          top: '-2vh',
+          left: '50%',
+          transform: 'translateX(-50%)',
+          width: '58vh',
           height: 'auto',
           filter: 'drop-shadow(0px 1vmin 1.5vmin rgba(0,0,0,0.5))',
-          marginBottom: '2vh'
+          zIndex: 1
         }}
         onError={(e) => e.target.style.display = 'none'}
       />
@@ -92,13 +96,14 @@ const WelcomeScreen = ({ onGradeSelect }) => {
         flexDirection: 'column',
         alignItems: 'center',
         gap: '2vh',
-        animation: 'fadeInUp 0.8s ease-out both'
+        animation: 'fadeInUp 0.8s ease-out both',
+        marginTop: '20vh'
       }}>
         {/* Top row: 3 icons */}
         <div style={{ display: 'flex', justifyContent: 'center', gap: '3.5vh' }}>
           {topRow.map((grade, i) => (
             <div key={grade.id} style={{ 
-              width: '17vh', height: '17vh',
+              width: '20vh', height: '20vh',
               animation: `fadeInUp 0.5s ${0.1 * i}s ease-out both` 
             }}>
               <GradeIcon grade={grade} onSelect={onGradeSelect} />
@@ -109,7 +114,7 @@ const WelcomeScreen = ({ onGradeSelect }) => {
         <div style={{ display: 'flex', justifyContent: 'center', gap: '3.5vh' }}>
           {bottomRow.map((grade, i) => (
             <div key={grade.id} style={{ 
-              width: '17vh', height: '17vh',
+              width: '20vh', height: '20vh',
               animation: `fadeInUp 0.5s ${0.3 + 0.1 * i}s ease-out both` 
             }}>
               <GradeIcon grade={grade} onSelect={onGradeSelect} />
